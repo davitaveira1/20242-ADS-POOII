@@ -4,6 +4,7 @@
  */
 package Ex01;
 
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -11,8 +12,9 @@ import javax.swing.table.DefaultTableModel;
  * @author Davi
  */
 public class TelaProfessores extends javax.swing.JFrame {
-    
+
     DefaultTableModel modeloTabela;
+    int linhaSelecionada;
 
     /**
      * Creates new form TelaProfessores
@@ -21,8 +23,8 @@ public class TelaProfessores extends javax.swing.JFrame {
         initComponents();
         definirModeloTabela();
     }
-    
-    void definirModeloTabela(){
+
+    void definirModeloTabela() {
         modeloTabela = (DefaultTableModel) tbProfessores.getModel();
     }
 
@@ -39,9 +41,11 @@ public class TelaProfessores extends javax.swing.JFrame {
         txtNome = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         txtTelefone = new javax.swing.JTextField();
-        btnInserir = new javax.swing.JButton();
+        btnEditar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbProfessores = new javax.swing.JTable();
+        btEditar = new javax.swing.JButton();
+        btExcluir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -51,11 +55,11 @@ public class TelaProfessores extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
         jLabel2.setText("Telefone:");
 
-        btnInserir.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
-        btnInserir.setText("Inserir");
-        btnInserir.addActionListener(new java.awt.event.ActionListener() {
+        btnEditar.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
+        btnEditar.setText("Inserir");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnInserirActionPerformed(evt);
+                btnEditarActionPerformed(evt);
             }
         });
 
@@ -67,7 +71,28 @@ public class TelaProfessores extends javax.swing.JFrame {
                 "Nome", "Telefone"
             }
         ));
+        tbProfessores.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbProfessoresMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tbProfessores);
+
+        btEditar.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
+        btEditar.setText("Editar");
+        btEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btEditarActionPerformed(evt);
+            }
+        });
+
+        btExcluir.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
+        btExcluir.setText("Excluir");
+        btExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btExcluirActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -85,13 +110,16 @@ public class TelaProfessores extends javax.swing.JFrame {
                             .addComponent(txtNome)
                             .addComponent(txtTelefone, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(88, 88, 88)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(88, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(btnInserir, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(225, 225, 225))
+                        .addGap(35, 35, 35)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btExcluir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 543, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(50, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -104,9 +132,12 @@ public class TelaProfessores extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtTelefone))
-                .addGap(31, 31, 31)
-                .addComponent(btnInserir)
-                .addGap(18, 18, 18)
+                .addGap(37, 37, 37)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnEditar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btEditar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btExcluir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(31, Short.MAX_VALUE))
         );
@@ -114,16 +145,59 @@ public class TelaProfessores extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnInserirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInserirActionPerformed
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
         // TODO add your handling code here:
         String nome = txtNome.getText();
         String telefone = txtTelefone.getText();
-        
-        modeloTabela.addRow(new Object[]{nome,telefone});
+
+        modeloTabela.addRow(new Object[]{nome, telefone});
         txtNome.setText("");
         txtTelefone.setText("");
         txtNome.requestFocus();
-    }//GEN-LAST:event_btnInserirActionPerformed
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void tbProfessoresMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbProfessoresMouseClicked
+        // TODO add your handling code here:
+
+        linhaSelecionada = tbProfessores.getSelectedRow();
+
+        String nomeDaLinha, telefoneDaLinha;
+
+        nomeDaLinha = String.valueOf(modeloTabela.getValueAt(linhaSelecionada, 0));
+        telefoneDaLinha = String.valueOf(modeloTabela.getValueAt(linhaSelecionada, 1));
+
+        txtNome.setText(nomeDaLinha);
+        txtTelefone.setText(telefoneDaLinha);
+    }//GEN-LAST:event_tbProfessoresMouseClicked
+
+    private void btEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btEditarActionPerformed
+        // TODO add your handling code here:
+
+        linhaSelecionada = tbProfessores.getSelectedRow();
+
+        String novoNome = txtNome.getText();
+        String novoTelefone = txtTelefone.getText();
+
+        tbProfessores.setValueAt(novoNome, linhaSelecionada, 0);
+        tbProfessores.setValueAt(novoTelefone, linhaSelecionada, 1);
+    }//GEN-LAST:event_btEditarActionPerformed
+
+    private void btExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btExcluirActionPerformed
+        // TODO add your handling code here:
+
+        if (linhaSelecionada == -1) {
+            JOptionPane.showMessageDialog(null,"Selecione uma linha!");
+        }else{
+            
+            modeloTabela.removeRow(linhaSelecionada);
+            txtNome.setText("");
+            txtTelefone.setText("");
+            txtNome.requestFocus();
+            
+        }
+
+
+    }//GEN-LAST:event_btExcluirActionPerformed
 
     /**
      * @param args the command line arguments
@@ -161,7 +235,9 @@ public class TelaProfessores extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnInserir;
+    private javax.swing.JButton btEditar;
+    private javax.swing.JButton btExcluir;
+    private javax.swing.JButton btnEditar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
