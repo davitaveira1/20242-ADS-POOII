@@ -24,8 +24,14 @@ public class inserir {
         con = conexao.getConnection();
         
         try {
-            pst = con.prepareStatement("insert into usuarios (login,senha) values ('daniel','123')");
-            pst.executeUpdate();
+            pst = con.prepareStatement("insert into usuarios "
+                    + "(login,senha) values ('renato','123')");
+            int linha = pst.executeUpdate();
+            if(linha > 0){
+                System.out.println("Inserção realizada com sucesso!");
+            }else{
+                System.out.println("Erro na inserção!");
+            }
         } catch (Exception e) {
             System.out.println("Erro: "+e);
         }
