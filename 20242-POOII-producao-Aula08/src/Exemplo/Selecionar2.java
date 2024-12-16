@@ -4,36 +4,31 @@
  */
 package Exemplo;
 
-import db.conexao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 /**
  *
  * @author Davi
  */
-public class Selecionar {
+public class Selecionar2 {
 
     public static void main(String[] args) {
         Connection con = db.conexao.getConnection();
         PreparedStatement pst;
         ResultSet rs;
 
+        //executar o sql
         try {
             pst = con.prepareStatement("select * from usuarios");
-            //pst.setInt(1, 10);
             rs = pst.executeQuery();
-            String login;
-            String senha;
-            while (rs.next()) {
-                login = rs.getString("login");
-                senha = rs.getString("senha");
-                System.out.println("Login: " + login + " senha: " + senha);
+            
+            while(rs.next()){
+                String login = rs.getString("login");
+                System.out.println("Login: "+login);
             }
-        } catch (SQLException e) {
-            System.out.println("Erro: " + e);
+        } catch (Exception e) {
         }
 
     }
