@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import javafx.scene.text.Text;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -33,7 +34,7 @@ public class v2TelaSelecionar extends javax.swing.JFrame {
         definirModeloTabela();
         buscarDadosBD();
         preencherTabela();
-        
+
         //btCadastrar.setEnabled(false);
         //btEditar.setEnabled(false);
     }
@@ -89,7 +90,7 @@ public class v2TelaSelecionar extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         txtCodigo = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btDeletar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -137,7 +138,12 @@ public class v2TelaSelecionar extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setText("jButton2");
+        btDeletar.setText("Delete");
+        btDeletar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btDeletarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -172,7 +178,7 @@ public class v2TelaSelecionar extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(btEditar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton2)
+                        .addComponent(btDeletar)
                         .addGap(21, 21, 21)
                         .addComponent(jButton1)))
                 .addContainerGap())
@@ -197,7 +203,7 @@ public class v2TelaSelecionar extends javax.swing.JFrame {
                     .addComponent(btCadastrar)
                     .addComponent(btEditar)
                     .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(btDeletar))
                 .addGap(35, 35, 35)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(27, 27, 27))
@@ -208,20 +214,34 @@ public class v2TelaSelecionar extends javax.swing.JFrame {
 
     private void btCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCadastrarActionPerformed
         // TODO add your handling code here:
-        if((txtLogin.getText().isEmpty())||(txtSenha.getText().isEmpty())){
-            JOptionPane.showMessageDialog(null,"Prencher os campos!");
-        }else{
+        if ((txtLogin.getText().isEmpty()) || (txtSenha.getText().isEmpty())) {
+            JOptionPane.showMessageDialog(null, "Prencher os campos!");
+        } else {
             try {
-                pst = conn.prepareStatement("insert into usuarios(login,senha) values (?,?)");
+                pst = conn.prepareStatement("insert into usuarios(login,senha) values (?,?)",
+                        Statement.RETURN_GENERATED_KEYS);
                 pst.setString(1, txtLogin.getText());
                 pst.setString(2, txtSenha.getText());
                 pst.executeUpdate();
+                
+                rs = pst.getGeneratedKeys();
+                int codigo=0;
+                //System.out.println("RS: "+rs.getInt(1));
+                while(rs.next()){
+                    codigo = rs.getInt(1);
+                    JOptionPane.showMessageDialog(null,"Cod: "+codigo);
+                }
+                
+                
+                //atualizar tabela
+                modeloTabela.addRow(new Object[]{codigo,txtLogin.getText(),txtSenha.getText()});
                 txtLogin.setText("");
                 txtSenha.setText("");
                 txtLogin.requestFocus();
                 
+
             } catch (SQLException e) {
-                System.out.println("Erro: "+e);
+                System.out.println("Erro: " + e);
             }
         }
     }//GEN-LAST:event_btCadastrarActionPerformed
@@ -229,34 +249,33 @@ public class v2TelaSelecionar extends javax.swing.JFrame {
     private void tbUsuariosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbUsuariosMouseClicked
         // TODO add your handling code here:
         linhaSelecionada = tbUsuarios.getSelectedRow();
-        
+
         String codigoSelecionado = String.valueOf(tbUsuarios.getValueAt(linhaSelecionada, 0));
         String loginSelecionado = String.valueOf(tbUsuarios.getValueAt(linhaSelecionada, 1));
         String senhaSelecionada = String.valueOf(tbUsuarios.getValueAt(linhaSelecionada, 2));
-        
+
         txtCodigo.setText(codigoSelecionado);
         txtLogin.setText(loginSelecionado);
         txtSenha.setText(senhaSelecionada);
-        
+
     }//GEN-LAST:event_tbUsuariosMouseClicked
 
     private void btEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btEditarActionPerformed
         // TODO add your handling code here:
         try {
-            
+
             pst = conn.prepareStatement("update usuarios set login=?, senha=? where codigo=?");
-            
+
             pst.setString(1, txtLogin.getText());
             pst.setString(2, txtSenha.getText());
             pst.setString(3, txtCodigo.getText());
             //atualizando o banco de dados
             pst.executeUpdate();
             //atualizar a JTable
-            
+
             modeloTabela.setValueAt(txtLogin.getText(), linhaSelecionada, 1);
             modeloTabela.setValueAt(txtSenha.getText(), linhaSelecionada, 2);
-            
-            
+
         } catch (Exception e) {
         }
     }//GEN-LAST:event_btEditarActionPerformed
@@ -265,6 +284,27 @@ public class v2TelaSelecionar extends javax.swing.JFrame {
         // TODO add your handling code here:
         tbUsuarios.removeAll();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void btDeletarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDeletarActionPerformed
+        // TODO add your handling code here:
+        try {
+            pst = conn.prepareStatement("delete from usuarios where codigo=?");
+            pst.setString(1,txtCodigo.getText());
+            //atualizar no BD
+            pst.executeUpdate();
+            //atualizar na JTable
+            modeloTabela.removeRow(linhaSelecionada);
+            //limpar os campos do formulário
+            txtCodigo.setText("");
+            txtLogin.setText("");
+            txtSenha.setText("");
+            
+            
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Erro: "+e);
+        }
+
+    }//GEN-LAST:event_btDeletarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -303,9 +343,9 @@ public class v2TelaSelecionar extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btCadastrar;
+    private javax.swing.JButton btDeletar;
     private javax.swing.JButton btEditar;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
