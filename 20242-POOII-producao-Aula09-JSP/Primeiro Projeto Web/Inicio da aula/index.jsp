@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <title>Página Inicial</title>
+    <title>Página Inicial - JSP</title>
 </head>
 <body>
 <h1>Bem-vindo ao Meu Projeto Web!</h1>
